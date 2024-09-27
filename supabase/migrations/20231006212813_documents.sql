@@ -19,15 +19,39 @@ as
 
 create table document_sections (
   id bigint primary key generated always as identity,
+  lot_id text,
   document_id bigint not null references documents (id),
   content text not null,
-  embedding vector (384)
+  content_name_description text not null,
+  name text,
+  description text,
+  level int,
+  occupation_group int,
+  occupation_group_name text,
+  occupation_group_description text,
+  career_area int,
+  career_area_name text,
+  career_area_description text,
+  requirement_level int,
+  requirement_level_description text,
+  license_typically_required bool,
+  certification_typically_required bool,
+  requires_specialized_training bool,
+  specialized_training_description text,
+  name_ca text,
+  name_gb text,
+  version text,
+  embedding vector (384),
+  embedding_name_description vector (384)
+  embedding_name vector (384)
 );
 
 create index on document_sections using hnsw (embedding vector_ip_ops);
+create index on document_sections using hnsw (embedding_name_description vector_ip_ops);
+create index on document_sections using hnsw (embedding_name vector_ip_ops);
 
 alter table documents enable row level security;
-alter table document_sections enable row level security;
+-- alter table document_sections disable row level security;
 
 create policy "Users can insert documents"
 on documents for insert to authenticated with check (

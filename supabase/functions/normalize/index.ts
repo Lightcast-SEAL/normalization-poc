@@ -30,21 +30,18 @@ Deno.serve(async (req) => {
     );
   }
 
-  const authorization = req.headers.get("Authorization");
-
   const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
   console.log("connected");
-  const { messages } = await req.json();
-  console.log({ messages, model });
-  const msg = messages[messages.length - 1].content;
-  const output = (await model.run(msg, {
+  const { occupation } = await req.json();
+  console.log({ occupation, model });
+  const output = (await model.run(occupation, {
     mean_pool: true,
     normalize: true,
   })) as number[];
 
   const embedding = JSON.stringify(output);
 
-  console.log({ msg, model, embedding });
+  console.log({ occupation, model, embedding });
 
   const { data: documents, error: matchError } = await supabase
     .rpc("match_document_sections", {
